@@ -29,7 +29,7 @@ object ECDHUtils {
     @Throws(Exception::class)
     fun loadPrivateKey(data: ByteArray?): PrivateKey {
         val params: ECParameterSpec = ECNamedCurveTable.getParameterSpec("secp256k1")
-        val prvKey = ECPrivateKeySpec(BigInteger(data), params)
+        val prvKey = ECPrivateKeySpec(BigInteger(1, data), params)
         val kf = KeyFactory.getInstance("ECDH", "BC")
         return kf.generatePrivate(prvKey)
     }
