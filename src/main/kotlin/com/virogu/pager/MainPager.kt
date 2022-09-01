@@ -86,7 +86,7 @@ fun MainView(window: ComposeWindow) {
                 logList.print(it)
             },
             onFinish = {
-                logList.printI("成功解密${it}个文件")
+                logList.printI("成功解密 $it 个文件")
             },
         )
     }
@@ -256,7 +256,7 @@ private fun CoroutineScope.decoderFiles(
                 if (inputFile.isFile) {
                     val targetFile = File(outputPath, inputFile.name.plus(".log"))
                     val r = XLogFileDecoder.parseFile(inputFile, targetFile)
-                    onProcess("解密文件 [$inputFile] => [${targetFile}] ${if (r) "成功" else "失败"}")
+                    onProcess("解密${if (r) "成功" else "失败"}[$inputFile] => [${targetFile}]")
                     if (r) {
                         count++
                     }
@@ -272,12 +272,12 @@ private fun CoroutineScope.decoderFiles(
                         val targetFile = File(outputPath, it.name.plus(".log"))
                         try {
                             val r = XLogFileDecoder.parseFile(inPath, targetFile)
-                            onProcess("解密文件 [$inputFile] => [${targetFile}] ${if (r) "成功" else "失败"}")
+                            onProcess("解密${if (r) "成功" else "失败"} [$inPath] => [${targetFile}]")
                             if (r) {
                                 count++
                             }
                         } catch (e: Throwable) {
-                            onProcess("解密文件 [${inPath}] => [${targetFile}] 失败")
+                            onProcess("解密失败 [${inPath}] => [${targetFile}]")
                             onError(e)
                         }
                     }
