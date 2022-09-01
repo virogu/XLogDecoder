@@ -1,7 +1,17 @@
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
+apply("config.gradle.kts")
+
 val kotlinVersion = "1.6.10"
+val programName: String by project
+val gitCommitCount: Int by project
+val buildFormatDate: String by project
+val gitCommitShortid: String by project
+val myPackageName: String by project
+val myPackageVersion: String by project
+val myPackageVendor: String by project
+val winUpgradeUuid: String by project
 
 plugins {
     kotlin("jvm") version "1.6.10"
@@ -52,19 +62,22 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
+            outputBaseDir.set(project.rootDir.resolve("out/packages"))
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "XLogDecoderTool"
-            packageVersion = "1.0.0"
-            vendor = "Virogu"
+            packageName = programName
+            packageVersion = myPackageVersion
+            packageName = myPackageName
+            vendor = myPackageVendor
             windows {
-                console = true
+                //console = true
                 menu = true
                 dirChooser = true
                 shortcut = true
                 perUserInstall = false
                 //menuGroup = myMenuGroup
                 iconFile.set(project.file("src/main/resources/icon.ico"))
-                //upgradeUuid = winUpgradeUuid
+                upgradeUuid = winUpgradeUuid
             }
         }
     }

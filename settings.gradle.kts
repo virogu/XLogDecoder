@@ -7,5 +7,5 @@ pluginManagement {
     }
 
 }
-rootProject.name = "XLogDecoderTool"
+rootProject.name = "XLogDecoder"
 
