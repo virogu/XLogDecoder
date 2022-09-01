@@ -2,11 +2,11 @@
 
 支持单个/多个文件/目录批量解密
 
-![截图1](.\screens\screenshot1.jpg)
+![截图1](https://raw.githubusercontent.com/virogu/XLogDecoder/master/screens/screenshot1.jpg)
 
-![截图2](.\screens\screenshot2.png)
+![截图2](https://raw.githubusercontent.com/virogu/XLogDecoder/master/screens/screenshot2.png)
 
-![截图3](.\screens\screenshot3.png)
+![截图3](https://raw.githubusercontent.com/virogu/XLogDecoder/master/screens/screenshot3.png)
 
 Java版解密调用的方法参考
 [wustMeiming/XlogDecoder](https://github.com/wustMeiming/XlogDecoder)
