@@ -28,12 +28,20 @@ val gitCommitShortid: String = with(ByteArrayOutputStream()) {
     }
 }
 
-val myPackageVersion: String = "1.0.${gitCommitCount}"
-val buildVersion: String = "1.${buildFormatDate}_${gitCommitShortid}"
+val packageVersionTriple by lazy {
+    val MAJOR = (gitCommitCount / 1000 / 255).coerceAtLeast(1)
+    val MINOR = (gitCommitCount / 1000 % 255)
+    val PATCH = gitCommitCount % 1000
+    Triple(MAJOR, MINOR, PATCH)
+}
+
+val myPackageVersion: String by lazy {
+    with(packageVersionTriple) {
+        "${first}.${second}.${third}"
+    }
+}
 
 val kotlinVersion: String by project
-val myPackageName: String by project
-val myMenuGroup: String by project
 val myPackageVendor: String by project
 val winUpgradeUuid: String by project
 
@@ -43,8 +51,8 @@ project.extra["gitCommitCount"] = gitCommitCount
 project.extra["programName"] = programName
 project.extra["buildFormatDate"] = buildFormatDate
 project.extra["gitCommitShortid"] = gitCommitShortid
+project.extra["packageVersionTriple"] = packageVersionTriple
 project.extra["myPackageVersion"] = myPackageVersion
-project.extra["buildVersion"] = buildVersion
 
 tasks.create("packageMsiAndRename") {
     group = "publish"

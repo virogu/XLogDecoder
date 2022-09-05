@@ -8,7 +8,6 @@ val programName: String by project
 val gitCommitCount: Int by project
 val buildFormatDate: String by project
 val gitCommitShortid: String by project
-val myPackageName: String by project
 val myPackageVersion: String by project
 val myPackageVendor: String by project
 val winUpgradeUuid: String by project
@@ -67,7 +66,6 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = programName
             packageVersion = myPackageVersion
-            packageName = myPackageName
             vendor = myPackageVendor
             windows {
                 //console = true
