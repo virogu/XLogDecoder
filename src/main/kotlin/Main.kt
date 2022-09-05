@@ -38,23 +38,18 @@ fun main() = application {
         undecorated = false,
         icon = icon,
     ) {
-        Tray(
-            icon = icon,
-            menu = {
-                if (state.isMinimized) {
-                    Item("显示主窗口", onClick = {
-                        state.isMinimized = false
-                    })
-                } else {
-                    Item("隐藏主窗口", onClick = {
-                        state.isMinimized = true
-                    })
-                }
-                Item("退出", onClick = {
-                    exitApplication()
+        Tray(icon = icon, menu = {
+            if (state.isMinimized) {
+                Item("显示主窗口", onClick = {
+                    state.isMinimized = false
+                })
+            } else {
+                Item("隐藏主窗口", onClick = {
+                    state.isMinimized = true
                 })
             }
-        )
+            Item("退出", onClick = ::exitApplication)
+        })
         App(window, this@application, state)
     }
 }

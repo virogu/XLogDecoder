@@ -3,12 +3,12 @@ package com.virogu.pager.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInWindow
@@ -16,11 +16,9 @@ import androidx.compose.ui.unit.dp
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget
-import java.awt.dnd.DropTargetAdapter
 import java.awt.dnd.DropTargetDropEvent
 import java.io.File
 import javax.swing.JFileChooser
-import javax.swing.JPanel
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -169,30 +167,13 @@ fun showFileChooser(
 fun DropBoxPanel(
     modifier: Modifier,
     window: ComposeWindow,
-    component: JPanel = JPanel(),
     onFileDrop: (List<File>) -> Unit,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val dropBoundsBean = remember {
-        mutableStateOf(DropBoundsBean())
-    }
-    Box(modifier = modifier.onPlaced {
-        dropBoundsBean.value = DropBoundsBean(
-            x = it.positionInWindow().x, y = it.positionInWindow().y, width = it.size.width, height = it.size.height
-        )
-    }) {
-        LaunchedEffect(dropBoundsBean.value) {
-            window.contentPane.remove(component)
-            component.setBounds(
-                dropBoundsBean.value.x.roundToInt(),
-                dropBoundsBean.value.y.roundToInt(),
-                dropBoundsBean.value.width,
-                dropBoundsBean.value.height
-            )
-            window.contentPane.add(component)
-            val target = object : DropTarget(component, object : DropTargetAdapter() {
+    val component = remember {
+        ComposePanel().apply {
+            val target = object : DropTarget() {
                 override fun drop(event: DropTargetDropEvent) {
-
                     event.acceptDrop(DnDConstants.ACTION_REFERENCE)
                     val dataFlavors = event.transferable.transferDataFlavors
                     dataFlavors.forEach {
@@ -205,13 +186,29 @@ fun DropBoxPanel(
                     }
                     event.dropComplete(true)
                 }
-            }) {}
-            // window.contentPane.dropTarget = target
+            }
+            dropTarget = target
+            isOpaque = false
+        }
+    }
+    val pane = remember {
+        window.rootPane
+    }
+    Box(modifier = modifier.onPlaced {
+        val x = it.positionInWindow().x.roundToInt()
+        val y = it.positionInWindow().y.roundToInt()
+        val width = it.size.width
+        val height = it.size.height
+        component.setBounds(x, y, width, height)
+    }) {
+        DisposableEffect(true) {
+            pane.add(component)
+            onDispose {
+                runCatching {
+                    pane.remove(component)
+                }
+            }
         }
         content()
     }
 }
-
-class DropBoundsBean(
-    val x: Float = 0f, val y: Float = 0f, val width: Int = 0, val height: Int = 0
-)
